@@ -162,7 +162,7 @@ class InsightNewObjectLocators:
 
 
 class InsightViewQueueLocators:
-    view_queue_page = (By.XPATH, "//section[@id='sd-page-panel']")
+    view_queue_page = (By.XPATH, "brake//section[@id='sd-page-panel']")
     view_queue_insight_column = (By.XPATH, "//span[contains(text(),'Insight')]")
 
 
