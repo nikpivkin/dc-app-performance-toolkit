@@ -26,6 +26,7 @@ class UrlManager:
         self.dashboard_params = '/dashboard'
         self.projects_params = '/projects'
         self.branches_base_branch = f'/projects/{self.project_key}/repos/{self.repo_slug}/branches?base='
+        self.code_navigation_settings_params = f'plugins/servlet/codescanstatus?repositoryId='
 
     def create_pull_request_url(self, from_branch, to_branch):
         return f"{self.host}/projects/{self.project_key}/repos/{self.repo_slug}/pull-requests?create&targetBranch=" \
@@ -78,6 +79,10 @@ class UrlManager:
 
     def projects_url(self):
         return f"{self.host}{self.projects_params}"
+
+    def file_url(self, *args):
+        file_path = "/".join(args)
+        return f"{self.repo_url()}/{file_path}"
 
 
 class PopupLocators:
@@ -218,3 +223,9 @@ class UserSettingsLocator:
 
 class RepoCommitsLocator:
     repo_commits_graph = (By.ID, 'commits-table')
+
+
+class CodeNavigationSearchLocator:
+    search_object_button = (By.ID, 'searchObjectButton')
+    search_object_section = (By.ID, 'searchObjectButtonSection')
+    object_search_field = (By.ID, 'objectSearchField')

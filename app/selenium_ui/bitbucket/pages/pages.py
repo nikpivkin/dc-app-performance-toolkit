@@ -4,7 +4,7 @@ from selenium_ui.base_page import BasePage
 from selenium_ui.bitbucket.pages.selectors import LoginPageLocators, GetStartedLocators, \
     DashboardLocators, ProjectsLocators, ProjectLocators, RepoLocators, RepoNavigationPanelLocators, PopupLocators, \
     PullRequestLocator, BranchesLocator, RepositorySettingsLocator, UserSettingsLocator, RepoCommitsLocator, \
-    LogoutPageLocators, UrlManager
+    LogoutPageLocators, UrlManager, CodeNavigationSearchLocator
 
 
 class LoginPage(BasePage):
@@ -40,7 +40,6 @@ class LoginPage(BasePage):
 
 
 class LogoutPage(BasePage):
-
     page_url = LogoutPageLocators.logout_url
 
 
@@ -275,7 +274,7 @@ class RepositorySettings(BasePage):
     def delete_repository(self, repo_slug):
         self.wait_repository_settings()
         self.wait_until_visible(RepositorySettingsLocator.delete_repository_button).click()
-        self.wait_until_visible(RepositorySettingsLocator.delete_repository_modal_text_field,).send_keys(repo_slug)
+        self.wait_until_visible(RepositorySettingsLocator.delete_repository_modal_text_field, ).send_keys(repo_slug)
         self.wait_until_clickable(RepositorySettingsLocator.delete_repository_modal_submit_button)
         self.wait_until_visible(RepositorySettingsLocator.delete_repository_modal_submit_button).click()
 
@@ -305,3 +304,17 @@ class RepositoryCommits(BasePage):
         BasePage.__init__(self, driver)
         url_manager = UrlManager(project_key=project_key, repo_slug=repo_slug)
         self.page_url = url_manager.commits_url()
+
+
+class CodeSearch(BasePage):
+    def __init__(self, driver, project_key, repo_slug):
+        BasePage.__init__(self, driver)
+        self.url_manager = UrlManager(project_key=project_key, repo_slug=repo_slug)
+        self.page_url = self.url_manager.repo_url()
+
+    def open_search(self):
+        self.wait_until_clickable(CodeNavigationSearchLocator.search_object_button).click()
+
+    def wait_for_page_loaded(self):
+        self.wait_until_any_ec_presented([CodeNavigationSearchLocator.search_object_section])
+        self.wait_until_any_ec_presented([CodeNavigationSearchLocator.object_search_field])
