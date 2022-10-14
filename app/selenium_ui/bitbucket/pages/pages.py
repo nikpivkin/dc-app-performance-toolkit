@@ -310,11 +310,17 @@ class CodeSearch(BasePage):
     def __init__(self, driver, project_key, repo_slug):
         BasePage.__init__(self, driver)
         self.url_manager = UrlManager(project_key=project_key, repo_slug=repo_slug)
-        self.page_url = self.url_manager.repo_url()
+        self.page_url = self.url_manager.code_files("module-examples/classes/main.js")
 
     def open_search(self):
         self.wait_until_clickable(CodeNavigationSearchLocator.search_object_button).click()
 
     def wait_for_page_loaded(self):
-        self.wait_until_any_ec_presented([CodeNavigationSearchLocator.search_object_section])
-        self.wait_until_any_ec_presented([CodeNavigationSearchLocator.object_search_field])
+        self.wait_until_present(CodeNavigationSearchLocator.search_object_section)
+        self.wait_until_present(CodeNavigationSearchLocator.object_search_field)
+
+    def find_links(self):
+        # random.choice(self.get_elements(CodeNavigationSearchLocator.file_link)).click()
+        self.wait_until_clickable(CodeNavigationSearchLocator.navigation_link).click()
+        self.wait_until_clickable(CodeNavigationSearchLocator.target_link).click()
+        self.wait_until_present(CodeNavigationSearchLocator.line_target)

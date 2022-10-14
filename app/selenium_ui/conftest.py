@@ -11,8 +11,11 @@ import filelock
 import pytest
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver import Chrome
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from time import sleep
+
+from webdriver_manager.chrome import ChromeDriverManager
 
 from util.conf import CONFLUENCE_SETTINGS, JIRA_SETTINGS, BITBUCKET_SETTINGS, JSM_SETTINGS, BAMBOO_SETTINGS
 from util.project_paths import JIRA_DATASET_ISSUES, JIRA_DATASET_JQLS, JIRA_DATASET_KANBAN_BOARDS, \
@@ -175,6 +178,10 @@ def webdriver(app_settings):
         chrome_options.add_argument("--disable-infobars")
         chrome_options.add_argument('lang=en')
         chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
+
+        # to run the selenium tests
+        # driver = Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+
         driver = Chrome(options=chrome_options)
         driver.app_settings = app_settings
         return driver

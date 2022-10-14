@@ -19,3 +19,18 @@ def code_search_load(webdriver, datasets):
 
     measure()
     PopupManager(webdriver).dismiss_default_popup()
+
+
+def open_target_link(webdriver, datasets):
+
+    project_key = "PROJECT_2"
+    repo_slug = "js-examples"
+    page = CodeSearch(webdriver, project_key, repo_slug)
+
+    @print_timing("selenium_code_search_load")
+    def measure():
+        page.go_to()
+        page.find_links()
+
+    measure()
+    PopupManager(webdriver).dismiss_default_popup()

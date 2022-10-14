@@ -10,5 +10,9 @@ def test_1_code_search_load(bitbucket_webdriver, bitbucket_datasets, bitbucket_s
     extension_ui.code_search_load(bitbucket_webdriver, bitbucket_datasets)
 
 
+def test_1_open_target_link(bitbucket_webdriver, bitbucket_datasets, bitbucket_screen_shots):
+    extension_ui.open_target_link(bitbucket_webdriver, bitbucket_datasets)
+
+
 def test_2_selenium_logout(bitbucket_webdriver, bitbucket_datasets, bitbucket_screen_shots):
     modules.logout(bitbucket_webdriver, bitbucket_datasets)

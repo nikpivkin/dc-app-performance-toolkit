@@ -84,6 +84,9 @@ class UrlManager:
         file_path = "/".join(args)
         return f"{self.repo_url()}/{file_path}"
 
+    def code_files(self, path):
+        return f"{self.host}/projects/{self.project_key}/repos/{self.repo_slug}/browse/{path}"
+
 
 class PopupLocators:
     default_popup = '.feature-discovery-close'
@@ -229,3 +232,7 @@ class CodeNavigationSearchLocator:
     search_object_button = (By.ID, 'searchObjectButton')
     search_object_section = (By.ID, 'searchObjectButtonSection')
     object_search_field = (By.ID, 'objectSearchField')
+    navigation_link = (By.CLASS_NAME, "code-multi-navigation-link")
+    target_link = (By.CLASS_NAME, "target-link")
+    file_link = (By.XPATH, "//*[@id='browse-table']//*/tr[contains(@class, 'file file-row')]//*/a")
+    line_target = (By.XPATH, "//*[@class='CodeMirror-gutter-elt']/a[contains(@class, 'target')]")
