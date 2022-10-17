@@ -23,11 +23,11 @@ def code_search_load(webdriver, datasets):
 
 def open_target_link(webdriver, datasets):
 
-    project_key = "PROJECT_2"
-    repo_slug = "js-examples"
+    project_key = "CUSTOM_PROJ"
+    repo_slug = "custom_repo"
     page = CodeSearch(webdriver, project_key, repo_slug)
 
-    @print_timing("selenium_code_search_load")
+    @print_timing("selenium_open_target_link")
     def measure():
         page.go_to()
         page.find_links()

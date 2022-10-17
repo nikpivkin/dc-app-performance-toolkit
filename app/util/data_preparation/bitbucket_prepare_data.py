@@ -53,13 +53,14 @@ def __get_repos(bitbucket_api):
         raise SystemExit(f'Required number of repositories based on concurrency was not found'
                          f' Found [{repos_count}] repos, needed at least [{concurrency}]')
 
-    return repos
+    return [repo for repo in repos if repo["name"] != "custom_repo"]
 
 
 def __get_projects(bitbucket_api):
     projects = bitbucket_api.get_projects(max_results=FETCH_LIMIT_PROJECTS)
     print(f'Projects number to fetch via API is {FETCH_LIMIT_PROJECTS}')
-    return projects
+
+    return [project for project in projects if project["key"] != "CUSTOM_PROJ"]
 
 
 def __get_prs(bitbucket_api):
