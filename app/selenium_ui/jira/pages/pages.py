@@ -6,7 +6,7 @@ import json
 
 from selenium_ui.base_page import BasePage
 from selenium_ui.jira.pages.selectors import UrlManager, LoginPageLocators, DashboardLocators, PopupLocators, \
-    IssueLocators, ProjectLocators, SearchLocators, BoardsListLocators, BoardLocators, LogoutLocators
+    IssueLocators, ProjectLocators, SearchLocators, BoardsListLocators, BoardLocators, LogoutLocators, S3PagesLocators
 
 
 class PopupManager(BasePage):
@@ -248,3 +248,63 @@ class Board(BasePage):
 
     def wait_for_scrum_board_backlog(self):
         self.wait_until_present(BoardLocators.scrum_board_backlog_content)
+
+class ProjectFolderPage(BasePage):
+    def __init__(self, driver, project_key: str):
+        BasePage.__init__(self, driver=driver)
+        url_manager = UrlManager(project_key=project_key)
+        self.page_url = url_manager.create_s3_project_folder_page()
+        self.page_loaded_selector = [S3PagesLocators.s3_project_page]
+
+    def wait_for_page_loaded(self):
+        self.wait_until_any_ec_presented(
+            selectors=[S3PagesLocators.s3_project_page])
+
+    def create_folder(self):
+        folder_create_button = self.wait_until_clickable(selector=S3PagesLocators.s3_new_folder_button)
+        folder_create_button.click()
+
+        folder_input = self.wait_until_visible(selector=S3PagesLocators.s3_new_folder_input)
+        new_folder_name = self._send_random_text_to_input(folder_input)
+
+        folder_submit_button = self.wait_until_clickable(selector=S3PagesLocators.s3_new_folder_submit)
+        folder_submit_button.click()
+
+        self.wait_until_visible(S3PagesLocators.get_object_by_content(new_folder_name))
+
+    def upload_file(self, temp_file_path):
+        self.wait_until_clickable(selector=S3PagesLocators.s3_upload_button)
+        upload_input = self.get_element(S3PagesLocators.s3_upload_input)
+        upload_input.send_keys(temp_file_path)
+        self.wait_until_visible(S3PagesLocators.is_file_uploaded(os.path.basename(temp_file_path)))
+
+    def upload_and_delete_file(self, temp_file_path, driver):
+        self.upload_file(temp_file_path)
+        file_name = os.path.basename(temp_file_path)
+        actions_button = self.wait_until_clickable(S3PagesLocators.actions_button(file_name))
+        driver.execute_script("arguments[0].scrollIntoView(true);", actions_button)
+        actions_button.click()
+        self.wait_until_clickable(S3PagesLocators.delete_action).click()
+        self.wait_until_clickable(S3PagesLocators.delete_file_button(file_name)).click()
+
+    def upload_and_rename_file(self, temp_file_path, driver):
+        self.upload_file(temp_file_path)
+        file_name = os.path.basename(temp_file_path)
+        actions_button = self.wait_until_clickable(S3PagesLocators.actions_button(file_name))
+        driver.execute_script("arguments[0].scrollIntoView(true);", actions_button)
+        actions_button.click()
+        self.wait_until_clickable(S3PagesLocators.rename_action).click()
+
+        file_name_input = self.wait_until_visible(S3PagesLocators.rename_file_input(file_name))
+        new_file_input = self._send_random_text_to_input(file_name_input)
+
+        self.wait_until_clickable(selector=S3PagesLocators.rename_file_submit(new_file_input)).click()
+        self.wait_until_visible(S3PagesLocators.get_object_by_content(new_file_input))
+
+    def _send_random_text_to_input(self, selector):
+        text = self.generate_random_string(10)
+        selector.send_keys((Keys.COMMAND if platform == "darwin" else Keys.CONTROL) + 'a')
+        selector.send_keys(Keys.DELETE)
+        selector.send_keys(text)
+        time.sleep(1)
+        return text

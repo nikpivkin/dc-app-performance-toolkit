@@ -145,3 +145,42 @@ class BoardLocators:
     # Scrum boards
     scrum_board_backlog_content = (By.CSS_SELECTOR, "#ghx-backlog[data-rendered]:not(.browser-metrics-stale)")
     board_columns = (By.CSS_SELECTOR, ".ghx-column")
+
+class S3PagesLocators:
+    s3_project_page = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]')
+    s3_new_folder_button = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[1]/div[1]/div[2]/button')
+    s3_new_folder_input = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[3]/table/tbody/tr[1]/td/form/div[1]/div[1]/input')
+    s3_new_folder_submit = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[3]/table/tbody/tr[1]/td/form/div[2]/button[1]')
+    s3_upload_button = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[1]/div[1]/div[1]/button')
+    s3_upload_input = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[1]/div[1]/div[1]/button/span[2]/input')
+    s3_file_upload_progress_bar = (By.XPATH, '//*[@id="simplecloudfiles-project-files"]/div/div[@role=\'presentation\']')
+
+    simplecloudfiles_menu = '//div[@class="atlaskit-portal"]/div/div[@role="menu" and starts-with(@class,"simplecloudfiles")]'
+    simplecloudfiles_table = '//*[@id="simplecloudfiles-project-files"]/div//table/tbody/tr/td'
+
+    rename_action = (By.XPATH, f'{simplecloudfiles_menu}/div/button[1]')
+    delete_action = (By.XPATH, f'{simplecloudfiles_menu}/div/button[2]')
+
+    @staticmethod
+    def get_object_by_content(text):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/a/span[text() = \'{text}\']'
+
+    @staticmethod
+    def actions_button(text):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/a/span[text() = \'{text}\']/../../../td[5]/button[1]'
+
+    @staticmethod
+    def is_file_uploaded(text):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/a/span[text() = "{text}"]/../../../td[3][string-length(text()) > 0]'
+
+    @staticmethod
+    def delete_file_button(filename):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/a/span[text() = "{filename}"]/../../../td[5]/div/button[1]'
+
+    @staticmethod
+    def rename_file_input(filename):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/form//input[@value="{filename}"]'
+
+    @staticmethod
+    def rename_file_submit(filename):
+        return By.XPATH, f'{S3PagesLocators.simplecloudfiles_table}/form//input[@value="{filename}"]/../../..//button[1]'

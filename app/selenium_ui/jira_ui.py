@@ -2,7 +2,6 @@ from selenium_ui.jira import modules
 from extension.jira import extension_ui  # noqa F401
 
 
-# this action should be the first one
 def test_0_selenium_a_login(jira_webdriver, jira_datasets, jira_screen_shots):
     modules.login(jira_webdriver, jira_datasets)
 
@@ -62,8 +61,24 @@ Refer to `app/selenium_ui/jira/modules.py` for examples.
 """
 
 
-# def test_1_selenium_custom_action(jira_webdriver, jira_datasets, jira_screen_shots):
-#     extension_ui.app_specific_action(jira_webdriver, jira_datasets)
+def test_1_project_page_load(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.project_page_load(jira_webdriver, jira_datasets)
+
+
+def test_1_project_page_create_folder(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.project_page_create_folder(jira_webdriver, jira_datasets)
+
+
+def test_1_project_page_upload(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.project_page_upload(jira_webdriver, jira_datasets)
+
+
+def test_1_project_page_upload_and_delete_file(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.project_page_upload_and_delete_file(jira_webdriver, jira_datasets)
+
+
+def test_1_project_page_upload_and_rename_file(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.project_page_upload_and_rename_file(jira_webdriver, jira_datasets)
 
 
 # this action should be the last one
