@@ -1,29 +1,58 @@
-import re
+import datetime
+import json
 from locustio.common_utils import init_logger, jira_measure, run_as_specific_user  # noqa F401
+from locustio.jira.requests_params import jira_datasets
+import random
 
 logger = init_logger(app_type='jira')
 
+PAGE_ENDPOINT = "/rest/simplewiki/latest/page"
 
 @jira_measure("locust_app_specific_action")
-# @run_as_specific_user(username='admin', password='admin')  # run as specific user
+@run_as_specific_user(username='admin', password='admin')
 def app_specific_action(locust):
-    r = locust.get('/app/get_endpoint', catch_response=True)  # call app-specific GET endpoint
-    content = r.content.decode('utf-8')   # decode response content
+    jira_dataset = jira_datasets()
 
-    token_pattern_example = '"token":"(.+?)"'
-    id_pattern_example = '"id":"(.+?)"'
-    token = re.findall(token_pattern_example, content)  # get TOKEN from response using regexp
-    id = re.findall(id_pattern_example, content)    # get ID from response using regexp
+    projects = jira_dataset['projects']
+    project = random.choice(projects)
+    project_id = project[1]
 
-    logger.locust_info(f'token: {token}, id: {id}')  # log info for debug when verbose is true in jira.yml file
-    if 'assertion string' not in content:
-        logger.error(f"'assertion string' was not found in {content}")
-    assert 'assertion string' in content  # assert specific string in response content
+    get_hashed_timestamp = lambda: hash(datetime.datetime.today().timestamp())
 
-    body = {"id": id, "token": token}  # include parsed variables to POST request body
-    headers = {'content-type': 'application/json'}
-    r = locust.post('/app/post_endpoint', body, headers, catch_response=True)  # call app-specific POST endpoint
-    content = r.content.decode('utf-8')
-    if 'assertion string after successful POST request' not in content:
-        logger.error(f"'assertion string after successful POST request' was not found in {content}")
-    assert 'assertion string after successful POST request' in content  # assertion after POST request
+    key = f"page{get_hashed_timestamp()}"
+    page = {
+        "key": key,
+        "permissions": [],
+        "project": {
+            "id": project_id
+        },
+        "title": key,
+        "type": "STANDARD",
+    }
+
+    # Create page
+    r = locust.post(PAGE_ENDPOINT, json=page, catch_response=True)
+    assert r.status_code == 200
+
+    content = json.loads(r.content.decode('utf-8'))
+    page_id = content["id"]
+
+    # View
+    r = locust.get(PAGE_ENDPOINT + f'?pageId={page_id}', catch_response=True)
+    assert r.status_code == 200
+
+    # Edit
+    payload = {
+        "id": page_id,
+        "title": get_hashed_timestamp(),
+        "type": "STANDARD"
+    }
+    r = locust.put(PAGE_ENDPOINT, json=payload, catch_response=True)
+    assert r.status_code == 200
+
+    # Delete
+    r = locust.delete(PAGE_ENDPOINT + f'/{page_id}', catch_response=True)
+    assert r.status_code == 200
+
+    content = json.loads(r.content.decode('utf-8'))
+    assert content["success"]

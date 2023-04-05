@@ -62,8 +62,20 @@ Refer to `app/selenium_ui/jira/modules.py` for examples.
 """
 
 
-# def test_1_selenium_custom_action(jira_webdriver, jira_datasets, jira_screen_shots):
-#     extension_ui.app_specific_action(jira_webdriver, jira_datasets)
+def test_1_sw_load_page(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.sw_page_load(jira_webdriver, jira_datasets)
+
+
+def test_1_sw_create_page(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.sw_page_create(jira_webdriver, jira_datasets)
+
+
+def test_1_sw_edit_page(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.sw_page_edit(jira_webdriver, jira_datasets)
+
+
+def test_1_sw_add_comment(jira_webdriver, jira_datasets, jira_screen_shots):
+    extension_ui.sw_add_comment(jira_webdriver, jira_datasets)
 
 
 # this action should be the last one

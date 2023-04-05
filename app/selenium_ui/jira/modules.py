@@ -18,6 +18,7 @@ ISSUES = "issues"
 CUSTOM_ISSUES = "custom_issues"
 JQLS = "jqls"
 PROJECTS = "projects"
+SW_PAGES = "pages"
 
 
 def setup_run_data(datasets):
@@ -25,6 +26,14 @@ def setup_run_data(datasets):
     projects_count = len(datasets[PROJECTS])
     user = random.choice(datasets[USERS])
     issue = random.choice(datasets[ISSUES])
+
+    if SW_PAGES in datasets:
+        if len(datasets[SW_PAGES]) > 0:
+            sw_page = random.choice(datasets[SW_PAGES])
+            datasets['sw_project_key'] = sw_page[2]
+            datasets['sw_page_key'] = sw_page[1]
+            datasets['sw_page_number'] = sw_page[0]
+
     if CUSTOM_ISSUES in datasets:
         if len(datasets[CUSTOM_ISSUES]) > 0:
             custom_issue = random.choice(datasets[CUSTOM_ISSUES])

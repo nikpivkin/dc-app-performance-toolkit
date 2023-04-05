@@ -11,7 +11,7 @@ class PopupLocators:
 class UrlManager:
 
     def __init__(self, issue_key=None, issue_id=None, project_key=None, jql=None, projects_list_page=None,
-                 board_id=None):
+                 board_id=None, page_key=None, page_number=None):
         self.host = JIRA_SETTINGS.server_url
         self.login_params = '/login.jsp'
         self.logout_params = '/logoutconfirm.jsp'
@@ -26,6 +26,11 @@ class UrlManager:
         self.boards_list_params = '/secure/ManageRapidViews.jspa'
         self.scrum_board_backlog_params = f"/secure/RapidBoard.jspa?rapidView={board_id}&view=planning"
         self.scrum_board_params = f"/secure/RapidBoard.jspa?rapidView={board_id}"
+
+        # Simple Wiki
+        self.page_url = f"/wiki/p/{project_key}/view/{page_key}"
+        self.page_edit_url = f"/wiki/p/{project_key}/view/{page_key}/{page_number}/edit"
+        self.pages_list = f"/wiki/p/{project_key}/view"
 
     def login_url(self):
         return f"{self.host}{self.login_params}"
@@ -62,6 +67,15 @@ class UrlManager:
 
     def logout_url(self):
         return f"{self.host}{self.logout_params}"
+
+    def create_sw_page_url(self):
+        return f"{self.host}{self.page_url}"
+
+    def create_sw_editor_page(self):
+        return f"{self.host}{self.page_edit_url}"
+
+    def create_sw_pages_list(self):
+        return f"{self.host}{self.pages_list}"
 
 
 class LoginPageLocators:
@@ -145,3 +159,28 @@ class BoardLocators:
     # Scrum boards
     scrum_board_backlog_content = (By.CSS_SELECTOR, "#ghx-backlog[data-rendered]:not(.browser-metrics-stale)")
     board_columns = (By.CSS_SELECTOR, ".ghx-column")
+
+
+class SimpleWikiPageLocator:
+    sw_page = (By.XPATH, '//*[@id="content"]/div[1]/div/div[2]/div/div[1]')
+    sw_page_comment = (By.XPATH, '//input[@placeholder="What do you want to say?"]')
+    sw_page_comment_textfield = (By.CLASS_NAME, 'ProseMirror')
+    sw_comment_block = (By.XPATH, '//*[@data-test-id="page-comments"]')
+    sw_comment_save = (
+        By.XPATH, '//*[@data-test-id="page-comments"]/div[last()]/div[2]/div/div[2]/div[2]/div/div[1]/button')
+
+
+class SimpleWikiPageEditorLocator:
+    sw_page_editor_textfield_location = (By.CLASS_NAME, "ProseMirror")
+    sw_page_editor_title_location = (By.XPATH, "//input[@name='title']")
+    sw_page_editor_save_button = (
+        By.XPATH, '//form/div/div[2]/div/div[2]/div/div[1]/button')
+
+
+class SimpleWikiPagesListLocator:
+    sw_add_page_dialog = (By.XPATH, '//*[@data-test-id="dialog-page-add"]')
+    sw_add_page = (By.XPATH, '//*[@data-test-id="page-header"]/div/div/div[2]/button')
+    sw_pages_table = (By.XPATH, '//*[@data-test-id="container-page-list"]/div[3]/div/table')
+    sw_add_page_title = (By.XPATH, '//input[@name="title"]')
+    sw_create_page = (By.XPATH, '//div[@data-test-id="dialog-page-add"]/footer/div/div[1]/button')
+    sw_load_mask = (By.XPATH, '//div[@data-test-id="load-mask"]')
